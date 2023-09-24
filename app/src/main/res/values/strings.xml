@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">FlyTicketsBooking</string>
+    <string name="see_all">See All</string>
+    <string name="hot_offer">Hot Offer</string>
+    <string name="book_flight">Book Flight</string>
 </resources>
