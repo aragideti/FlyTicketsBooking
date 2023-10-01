@@ -18,3 +18,8 @@ fun Mastercard(
         )
     }
 }
+
+data class TabItem (
+    val title: String,
+    val screen: @Composable () -> Unit
+)

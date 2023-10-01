@@ -3,4 +3,7 @@
     <string name="see_all">See All</string>
     <string name="hot_offer">Hot Offer</string>
     <string name="book_flight">Book Flight</string>
+    <string name="one_way">One way</string>
+    <string name="round">Round</string>
+    <string name="multiply">Multiply</string>
 </resources>

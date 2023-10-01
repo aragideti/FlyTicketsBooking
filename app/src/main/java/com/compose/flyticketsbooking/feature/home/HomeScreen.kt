@@ -25,7 +25,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.constraintlayout.compose.Dimension
 import com.compose.flyticketsbooking.R
-import com.compose.flyticketsbooking.feature.home.tabs.CustomTabSample
+import com.compose.flyticketsbooking.feature.home.cards.TabItem
+import com.compose.flyticketsbooking.feature.home.tabs.TabBar
+import com.compose.flyticketsbooking.feature.home.tabs.tabScreen.Multiply
+import com.compose.flyticketsbooking.feature.home.tabs.tabScreen.OneWay
+import com.compose.flyticketsbooking.feature.home.tabs.tabScreen.Round
 
 @Preview(showBackground = true)
 @OptIn(ExperimentalFoundationApi::class)
@@ -44,16 +48,18 @@ fun HomeScreen(
 
     ) {
         val (hotOfferText, cardSlider, seeAllText, bookFLightText, menuButton, tabSwitcher)
-                = createRefs()
+                = remember { createRefs() }
+
         Image(
             painter = painterResource(id = R.drawable.baseline_menu_24),
             contentDescription = "",
-            modifier = Modifier.constrainAs(menuButton) {
-                end.linkTo(parent.end, margin = 16.dp)
-                top.linkTo(parent.top, margin = 8.dp)
-                height = Dimension.value(36.dp)
-                width = Dimension.value(36.dp)
-            }
+            modifier = Modifier
+                .constrainAs(menuButton) {
+                    end.linkTo(parent.end, margin = 16.dp)
+                    top.linkTo(parent.top, margin = 8.dp)
+                    height = Dimension.value(36.dp)
+                    width = Dimension.value(36.dp)
+                }
                 .clickable { }
         )
         Text(
@@ -66,21 +72,41 @@ fun HomeScreen(
                 height = Dimension.wrapContent
             }
         )
-    val (selected, setSelected) = remember {
+    var (selected, setSelected) = remember {
         mutableStateOf(0)
     }
-        val items = listOf("One way", "Round", "Multiply")
+        val items = listOf(
+            TabItem(
+                title = stringResource(R.string.one_way),
+                screen = { OneWay(stringResource(R.string.one_way)) }
+            ),
+            TabItem(
+                title = stringResource(R.string.round),
+                screen = { Round(stringResource(R.string.round)) }
+            ),
+            TabItem(
+                title = stringResource(R.string.multiply),
+                screen = { Multiply(stringResource(R.string.multiply)) }
+            ),
+        )
 
-        CustomTabSample(modifier = Modifier.constrainAs(tabSwitcher) {
+//        CustomTabSample(
+//            setSelected = setSelected,
+//            selected = selected,
+//            items = items,
+//            modifier = Modifier.constrainAs(tabSwitcher) {
+//            start.linkTo(parent.start)
+//            end.linkTo(parent.end)
+//            top.linkTo(bookFLightText.bottom, margin = 18.dp)
+//            }
+//        )
+        TabBar(modifier = Modifier.constrainAs(tabSwitcher) {
             start.linkTo(parent.start)
             end.linkTo(parent.end)
             top.linkTo(bookFLightText.bottom, margin = 18.dp)
         },
-            setSelected = setSelected,
-            selected = selected,
-            items = items
+            items
         )
-
         Text(
             text = stringResource(R.string.hot_offer),
             style = MaterialTheme.typography.h5,
@@ -118,3 +144,4 @@ fun HomeScreen(
         }
     }
 }
+
