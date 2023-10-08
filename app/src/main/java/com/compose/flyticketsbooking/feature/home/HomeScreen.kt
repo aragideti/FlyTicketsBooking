@@ -72,9 +72,9 @@ fun HomeScreen(
                 height = Dimension.wrapContent
             }
         )
-    var (selected, setSelected) = remember {
-        mutableStateOf(0)
-    }
+//    var (selected, setSelected) = remember {
+//        mutableStateOf(0)
+//    }
         val items = listOf(
             TabItem(
                 title = stringResource(R.string.one_way),
