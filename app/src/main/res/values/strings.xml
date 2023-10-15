@@ -9,5 +9,8 @@
     <string name="indiraGhandi">Indira Ghandi International Airport</string>
     <string name="chandra">Subhash Chandra International Airport</string>
     <string name="round">Round</string>
+    <string name="addReturnDate">+ Add Return Date</string>
+    <string name="oneAdult">1 Adult</string>
+    <string name="economy">Economy</string>
     <string name="multiply">Multiply</string>
 </resources>

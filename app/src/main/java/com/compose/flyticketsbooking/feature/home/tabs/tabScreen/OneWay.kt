@@ -1,9 +1,11 @@
 package com.compose.flyticketsbooking.feature.home.tabs.tabScreen
 
 
+import android.app.DatePickerDialog
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +24,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,13 +33,17 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.compose.flyticketsbooking.R
+import java.util.Calendar
 
 @Composable
 fun OneWay(
@@ -49,7 +56,7 @@ fun OneWay(
             .verticalScroll(rememberScrollState())
 
     ) {
-        val (from, to, upDown ) = remember { createRefs() }
+        val (from, to, upDown, departureReturnItemsWrap, travelerClassWrap) = remember { createRefs() }
 
         DepartureItem(
             image = R.drawable.baseline_flight_takeoff_24,
@@ -96,8 +103,81 @@ fun OneWay(
                 top.linkTo(parent.top, margin = 64.dp)
             }
         )
+
+        var isDatePickerVisible =  remember { mutableStateOf(false) }
+        var selectedDate = remember { mutableStateOf(Calendar.getInstance()) }
+
+        Row(modifier = Modifier
+            .height(48.dp)
+            .padding(start = 16.dp, end = 16.dp)
+            .constrainAs(departureReturnItemsWrap) {
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                top.linkTo(to.bottom, margin = 36.dp)
+            }) {
+            SmallItemDeparture(onClick = { isDatePickerVisible.value = true },
+                modifier = Modifier
+                    .height(48.dp)
+                    .weight(0.95f)
+                    .shadow(8.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.White)
+
+            )
+
+            Spacer(modifier = Modifier.weight(0.1f))
+
+            SmallItemOnlyText(
+                text = R.string.addReturnDate,
+                fontSize = 16.dp,
+                modifier = Modifier
+                    .height(48.dp)
+                    .weight(0.95f)
+                    .shadow(8.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.White)
+
+            )
+        }
+
+        Row(modifier = Modifier
+            .height(48.dp)
+            .padding(start = 16.dp, end = 16.dp)
+            .constrainAs(travelerClassWrap) {
+                start.linkTo(parent.start)
+                end.linkTo(parent.end)
+                top.linkTo(departureReturnItemsWrap.bottom, margin = 16.dp)
+            }) {
+            SmallItemOnlyText(
+                text = R.string.oneAdult,
+                fontSize = 18.dp,
+                modifier = Modifier
+                    .height(48.dp)
+                    .weight(0.95f)
+                    .shadow(8.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.White)
+
+            )
+
+            Spacer(modifier = Modifier.weight(0.1f))
+
+            SmallItemOnlyText(
+                text = R.string.economy,
+                fontSize = 18.dp,
+                modifier = Modifier
+                    .height(48.dp)
+                    .weight(0.95f)
+                    .shadow(8.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.White)
+
+            )
+        }
+
     }
 }
+
 
 @Composable
 fun Circle(modifier: Modifier) {
@@ -169,5 +249,63 @@ fun DepartureItem(
                 )
             }
         }
+    }
+}
+
+@Composable
+fun SmallItemDeparture(
+    onClick: () -> Unit,
+    modifier: Modifier,
+) {
+    Box(
+        modifier = modifier
+        .clickable {
+        onClick()
+    }
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 8.dp)
+                .align(Alignment.CenterStart),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.baseline_calendar_month_24),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(36.dp)
+            )
+
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp),
+                text = "15/07/23",
+                fontWeight = FontWeight.Bold,
+                fontSize = 18.sp
+            )
+        }
+    }
+}
+
+
+@Composable
+fun SmallItemOnlyText(
+    text: Int,
+    fontSize: Dp,
+    modifier: Modifier,
+) {
+    Box(
+        modifier = modifier
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = stringResource(text),
+            fontWeight = FontWeight.Bold,
+            fontSize = fontSize.value.sp,
+            color = Color.Gray
+        )
     }
 }
