@@ -53,8 +53,8 @@ fun TabBar(
     HorizontalPager(
         modifier = Modifier.fillMaxSize()
             .padding(vertical = 120.dp)
-        .background(Color.Gray)
-            .height(200.dp),
+//        .background(Color.Gray)
+            .height(400.dp),
         count = pages.size,
         state = pagerState,
     ) { page ->
