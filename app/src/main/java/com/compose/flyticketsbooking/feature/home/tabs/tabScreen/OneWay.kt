@@ -21,6 +21,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -104,9 +105,6 @@ fun OneWay(
             }
         )
 
-        var isDatePickerVisible =  remember { mutableStateOf(false) }
-        var selectedDate = remember { mutableStateOf(Calendar.getInstance()) }
-
         Row(modifier = Modifier
             .height(48.dp)
             .padding(start = 16.dp, end = 16.dp)
@@ -115,7 +113,7 @@ fun OneWay(
                 end.linkTo(parent.end)
                 top.linkTo(to.bottom, margin = 36.dp)
             }) {
-            SmallItemDeparture(onClick = { isDatePickerVisible.value = true },
+            SmallItemDeparture(
                 modifier = Modifier
                     .height(48.dp)
                     .weight(0.95f)
@@ -136,7 +134,6 @@ fun OneWay(
                     .shadow(8.dp)
                     .clip(RoundedCornerShape(8.dp))
                     .background(Color.White)
-
             )
         }
 
@@ -254,13 +251,13 @@ fun DepartureItem(
 
 @Composable
 fun SmallItemDeparture(
-    onClick: () -> Unit,
     modifier: Modifier,
 ) {
+    var showDialog = remember { mutableStateOf(false) }
     Box(
         modifier = modifier
         .clickable {
-        onClick()
+            showDialog.value = true
     }
     ) {
         Row(
@@ -270,6 +267,7 @@ fun SmallItemDeparture(
                 .align(Alignment.CenterStart),
             verticalAlignment = Alignment.CenterVertically
         ) {
+
             Image(
                 painter = painterResource(id = R.drawable.baseline_calendar_month_24),
                 contentDescription = null,
@@ -286,9 +284,14 @@ fun SmallItemDeparture(
                 fontSize = 18.sp
             )
         }
+
+        if (showDialog.value) {
+            CustomDatePickerDialog(label = stringResource(id = R.string.departure)) {
+                showDialog.value = false
+            }
+        }
     }
 }
-
 
 @Composable
 fun SmallItemOnlyText(

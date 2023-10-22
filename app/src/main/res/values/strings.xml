@@ -13,4 +13,6 @@
     <string name="oneAdult">1 Adult</string>
     <string name="economy">Economy</string>
     <string name="multiply">Multiply</string>
+    <string name="done">Done</string>
+    <string name="departure">Departure</string>
 </resources>
