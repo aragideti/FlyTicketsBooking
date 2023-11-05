@@ -15,4 +15,5 @@
     <string name="multiply">Multiply</string>
     <string name="done">Done</string>
     <string name="departure">Departure</string>
+    <string name="chooseDate">Choose a date</string>
 </resources>
