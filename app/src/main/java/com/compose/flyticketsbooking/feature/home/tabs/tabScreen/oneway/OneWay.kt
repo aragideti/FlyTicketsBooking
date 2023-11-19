@@ -24,6 +24,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -46,7 +47,6 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun OneWay(
     content: String,
-    lifecycleOwner: androidx.lifecycle.LifecycleOwner
 ) {
 
     ConstraintLayout(
@@ -117,8 +117,7 @@ fun OneWay(
                     .weight(0.95f)
                     .shadow(8.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(Color.White),
-                lifecycleOwner
+                    .background(Color.White)
             )
 
             Spacer(modifier = Modifier.weight(0.1f))
@@ -250,11 +249,8 @@ fun DepartureItem(
 @Composable
 fun SmallItemDeparture(
     modifier: Modifier,
-    lifecycleOwner: androidx.lifecycle.LifecycleOwner
 ) {
-    val startChooseDateText = stringResource(id = R.string.chooseDate)
-    var showDialog = remember { mutableStateOf(false) }
-    val chosenDate = remember { mutableStateOf(startChooseDateText) }
+    val showDialog = remember { mutableStateOf(false) }
     val viewModel: OneWayViewModel = koinViewModel()
     Box(
         modifier = modifier
@@ -281,22 +277,17 @@ fun SmallItemDeparture(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 8.dp),
-                text = chosenDate.value,
+                text = viewModel.date.collectAsState().value.AsString(),
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp
             )
         }
 
         if (showDialog.value) {
-           CustomDatePickerDialog(label = stringResource(id = R.string.departure), ) {
+           CustomDatePickerDialog(label = stringResource(id = R.string.departure)) {
                 showDialog.value = false
             }
         }
-    }
-
-    viewModel.date.observe(lifecycleOwner) {
-        chosenDate.value = it.toString()
-        Log.e("date", it.toString() + "*******")
     }
 }
 

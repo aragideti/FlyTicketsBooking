@@ -79,7 +79,7 @@ fun HomeScreen(
         val items = listOf(
             TabItem(
                 title = stringResource(R.string.one_way),
-                screen = { OneWay(stringResource(R.string.one_way), lifecycleOwner) }
+                screen = { OneWay(stringResource(R.string.one_way)) }
             ),
             TabItem(
                 title = stringResource(R.string.round),

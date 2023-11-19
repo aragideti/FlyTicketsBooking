@@ -1,20 +1,17 @@
 package com.compose.flyticketsbooking.feature.home.tabs.tabScreen.oneway
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-
+import com.compose.flyticketsbooking.R
+import com.compose.flyticketsbooking.utilities.UiText
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class OneWayViewModel : ViewModel() {
-    private val _date = MutableLiveData<String>()
-    val date: LiveData<String>
+    private val _date = MutableStateFlow<UiText>(UiText.StringResource(R.string.chooseDate))
+    val date: StateFlow<UiText>
         get() = _date
 
-    fun getDate(): String? {
-        return _date.value
-    }
-
     fun setDate(newDate: String) {
-        _date.value = newDate
+        _date.value = UiText.DynamicString(newDate)
     }
 }
