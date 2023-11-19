@@ -1,7 +1,6 @@
 package com.compose.flyticketsbooking.feature.home.tabs.tabScreen.oneway
 
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -41,7 +40,11 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.compose.flyticketsbooking.R
+import com.compose.flyticketsbooking.utilities.DialogType
+import com.compose.flyticketsbooking.utilities.UiText
+import kotlinx.coroutines.flow.StateFlow
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -56,7 +59,7 @@ fun OneWay(
 
     ) {
         val (from, to, upDown, departureReturnItemsWrap, travelerClassWrap) = remember { createRefs() }
-
+        val viewModel: OneWayViewModel = koinViewModel()
         DepartureItem(
             image = R.drawable.baseline_flight_takeoff_24,
             headText = R.string.delhi,
@@ -111,26 +114,26 @@ fun OneWay(
                 end.linkTo(parent.end)
                 top.linkTo(to.bottom, margin = 36.dp)
             }) {
+
             SmallItemDeparture(
                 modifier = Modifier
                     .height(48.dp)
                     .weight(0.95f)
                     .shadow(8.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(Color.White)
+                    .background(Color.White),
+                viewModel.chooseDate
             )
 
             Spacer(modifier = Modifier.weight(0.1f))
-
-            SmallItemOnlyText(
-                text = R.string.addReturnDate,
-                fontSize = 16.dp,
-                modifier = Modifier
-                    .height(48.dp)
-                    .weight(0.95f)
-                    .shadow(8.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Color.White)
+            
+            AddReturnDate(modifier = Modifier
+                .height(48.dp)
+                .weight(0.95f)
+                .shadow(8.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color.White),
+                viewModel.returnDate
             )
         }
 
@@ -168,7 +171,31 @@ fun OneWay(
 
             )
         }
+    }
+}
 
+@Composable
+private fun AddReturnDate(modifier: Modifier, choose: StateFlow<UiText>) {
+    val showDialog = remember { mutableStateOf(false) }
+    Box(
+        modifier = modifier
+            .clickable {
+                showDialog.value = true
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = choose.collectAsState().value.AsString(),
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+            color = Color.Gray
+        )
+
+        if (showDialog.value) {
+            CustomDatePickerDialog(label = stringResource(id = R.string.departure), DialogType.RETURN) {
+                showDialog.value = false
+            }
+        }
     }
 }
 
@@ -247,16 +274,13 @@ fun DepartureItem(
 }
 
 @Composable
-fun SmallItemDeparture(
-    modifier: Modifier,
-) {
+private fun SmallItemDeparture(modifier: Modifier, choose: StateFlow<UiText>) {
     val showDialog = remember { mutableStateOf(false) }
-    val viewModel: OneWayViewModel = koinViewModel()
     Box(
         modifier = modifier
-        .clickable {
-            showDialog.value = true
-    }
+            .clickable {
+                showDialog.value = true
+            }
     ) {
         Row(
             modifier = Modifier
@@ -277,14 +301,17 @@ fun SmallItemDeparture(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 8.dp),
-                text = viewModel.date.collectAsState().value.AsString(),
+                text = choose.collectAsState().value.AsString(),
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp
             )
         }
 
         if (showDialog.value) {
-           CustomDatePickerDialog(label = stringResource(id = R.string.departure)) {
+            CustomDatePickerDialog(
+                label = stringResource(id = R.string.departure),
+                DialogType.DEPARTURE
+            ) {
                 showDialog.value = false
             }
         }

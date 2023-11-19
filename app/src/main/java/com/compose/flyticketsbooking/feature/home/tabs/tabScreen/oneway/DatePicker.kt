@@ -1,6 +1,5 @@
 package com.compose.flyticketsbooking.feature.home.tabs.tabScreen.oneway
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,22 +28,25 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.compose.flyticketsbooking.R
+import com.compose.flyticketsbooking.utilities.DialogType
 import org.koin.androidx.compose.koinViewModel
 import java.util.Calendar
 
 @Composable
 fun CustomDatePickerDialog(
     label: String,
+    dialogType: DialogType,
     onDismissRequest: () -> Unit,
 ) {
     Dialog(onDismissRequest = { onDismissRequest() }) {
-        DatePickerUI(label, onDismissRequest)
+        DatePickerUI(label, dialogType, onDismissRequest)
     }
 }
 
 @Composable
 fun DatePickerUI(
     label: String,
+    dialogType: DialogType,
     onDismissRequest: () -> Unit,
     viewModel: OneWayViewModel = koinViewModel()
 ) {
@@ -86,7 +88,13 @@ fun DatePickerUI(
                     .fillMaxWidth()
                     .padding(horizontal = 10.dp),
                 onClick = {
-                    viewModel.setDate("${chosenDay.value}/${chosenMonth.value}/${chosenYear.value}")
+                    val result = "${chosenDay.value}/${chosenMonth.value}/${chosenYear.value}"
+                    if (dialogType == DialogType.DEPARTURE) {
+                        viewModel.setChooseDate(result)
+                    } else {
+                        viewModel.setReturnDate(result)
+                    }
+
 //                    Log.e("pickedDate", "${chosenDay.value}-${chosenMonth.value}-${chosenYear.value}")
                     onDismissRequest()
                 }

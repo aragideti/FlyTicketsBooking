@@ -7,11 +7,19 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class OneWayViewModel : ViewModel() {
-    private val _date = MutableStateFlow<UiText>(UiText.StringResource(R.string.chooseDate))
-    val date: StateFlow<UiText>
-        get() = _date
+    private val _chooseDate = MutableStateFlow<UiText>(UiText.StringResource(R.string.chooseDate))
+    val chooseDate: StateFlow<UiText>
+        get() = _chooseDate
 
-    fun setDate(newDate: String) {
-        _date.value = UiText.DynamicString(newDate)
+    fun setChooseDate(newDate: String) {
+        _chooseDate.value = UiText.DynamicString(newDate)
+    }
+
+    private val _returnDate = MutableStateFlow<UiText>(UiText.StringResource(R.string.addReturnDate))
+    val returnDate: StateFlow<UiText>
+        get() = _returnDate
+
+    fun setReturnDate(newDate: String) {
+        _returnDate.value = UiText.DynamicString(newDate)
     }
 }
