@@ -11,15 +11,22 @@ class OneWayViewModel : ViewModel() {
     val chooseDate: StateFlow<UiText>
         get() = _chooseDate
 
-    fun setChooseDate(newDate: String) {
-        _chooseDate.value = UiText.DynamicString(newDate)
-    }
+    private val _passengers = MutableStateFlow<UiText>(UiText.StringResource(R.string.oneAdult))
+    val passengers: StateFlow<UiText>
+        get() = _passengers
 
     private val _returnDate = MutableStateFlow<UiText>(UiText.StringResource(R.string.addReturnDate))
     val returnDate: StateFlow<UiText>
         get() = _returnDate
 
+    fun setChooseDate(newDate: String) {
+        _chooseDate.value = UiText.DynamicString(newDate)
+    }
     fun setReturnDate(newDate: String) {
         _returnDate.value = UiText.DynamicString(newDate)
+    }
+
+    fun setPassengers(passengers: String) {
+        _passengers.value = UiText.DynamicString(passengers)
     }
 }

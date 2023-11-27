@@ -23,7 +23,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -40,11 +39,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.compose.flyticketsbooking.R
+import com.compose.flyticketsbooking.utilities.AsString
 import com.compose.flyticketsbooking.utilities.DialogType
-import com.compose.flyticketsbooking.utilities.UiText
-import kotlinx.coroutines.flow.StateFlow
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -60,6 +58,10 @@ fun OneWay(
     ) {
         val (from, to, upDown, departureReturnItemsWrap, travelerClassWrap) = remember { createRefs() }
         val viewModel: OneWayViewModel = koinViewModel()
+        val chooseDate = AsString(viewModel.chooseDate.collectAsStateWithLifecycle().value)
+        val returnDate = AsString(viewModel.returnDate.collectAsStateWithLifecycle().value)
+        val passengerOnBoard = AsString(viewModel.passengers.collectAsStateWithLifecycle().value)
+
         DepartureItem(
             image = R.drawable.baseline_flight_takeoff_24,
             headText = R.string.delhi,
@@ -122,18 +124,18 @@ fun OneWay(
                     .shadow(8.dp)
                     .clip(RoundedCornerShape(8.dp))
                     .background(Color.White),
-                viewModel.chooseDate
+                chooseDate
             )
 
             Spacer(modifier = Modifier.weight(0.1f))
-            
+
             AddReturnDate(modifier = Modifier
                 .height(48.dp)
                 .weight(0.95f)
                 .shadow(8.dp)
                 .clip(RoundedCornerShape(8.dp))
                 .background(Color.White),
-                viewModel.returnDate
+                returnDate
             )
         }
 
@@ -145,16 +147,23 @@ fun OneWay(
                 end.linkTo(parent.end)
                 top.linkTo(departureReturnItemsWrap.bottom, margin = 16.dp)
             }) {
-            SmallItemOnlyText(
-                text = R.string.oneAdult,
-                fontSize = 18.dp,
-                modifier = Modifier
-                    .height(48.dp)
-                    .weight(0.95f)
-                    .shadow(8.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Color.White)
-
+//            SmallItemOnlyText(
+//                text = R.string.oneAdult,
+//                fontSize = 18.dp,
+//                modifier = Modifier
+//                    .height(48.dp)
+//                    .weight(0.95f)
+//                    .shadow(8.dp)
+//                    .clip(RoundedCornerShape(8.dp))
+//                    .background(Color.White)
+//            )
+            AddPassengers(modifier = Modifier
+                .height(48.dp)
+                .weight(0.95f)
+                .shadow(8.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color.White),
+                passengerOnBoard
             )
 
             Spacer(modifier = Modifier.weight(0.1f))
@@ -175,7 +184,7 @@ fun OneWay(
 }
 
 @Composable
-private fun AddReturnDate(modifier: Modifier, choose: StateFlow<UiText>) {
+private fun AddReturnDate(modifier: Modifier, date: String) {
     val showDialog = remember { mutableStateOf(false) }
     Box(
         modifier = modifier
@@ -185,7 +194,7 @@ private fun AddReturnDate(modifier: Modifier, choose: StateFlow<UiText>) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = choose.collectAsState().value.AsString(),
+            text = date,
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
             color = Color.Gray
@@ -274,7 +283,7 @@ fun DepartureItem(
 }
 
 @Composable
-private fun SmallItemDeparture(modifier: Modifier, choose: StateFlow<UiText>) {
+private fun SmallItemDeparture(modifier: Modifier, choose: String) {
     val showDialog = remember { mutableStateOf(false) }
     Box(
         modifier = modifier
@@ -301,7 +310,7 @@ private fun SmallItemDeparture(modifier: Modifier, choose: StateFlow<UiText>) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 8.dp),
-                text = choose.collectAsState().value.AsString(),
+                text = choose,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp
             )
@@ -312,6 +321,31 @@ private fun SmallItemDeparture(modifier: Modifier, choose: StateFlow<UiText>) {
                 label = stringResource(id = R.string.departure),
                 DialogType.DEPARTURE
             ) {
+                showDialog.value = false
+            }
+        }
+    }
+}
+
+@Composable
+private fun AddPassengers(modifier: Modifier, passengers: String) {
+    val showDialog = remember { mutableStateOf(false) }
+    Box(
+        modifier = modifier
+            .clickable {
+                showDialog.value = true
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = passengers,
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+            color = Color.Gray
+        )
+
+        if (showDialog.value) {
+            CustomPassengersPickerDialog(label = stringResource(id = R.string.passengers)) {
                 showDialog.value = false
             }
         }
