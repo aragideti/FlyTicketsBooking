@@ -1,7 +1,6 @@
-package com.compose.flyticketsbooking.feature.home.tabs.tabScreen
+package com.compose.flyticketsbooking.feature.home.tabs.tabScreen.oneway
 
 
-import android.app.DatePickerDialog
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,7 +20,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -34,21 +32,22 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.compose.flyticketsbooking.R
-import java.util.Calendar
+import com.compose.flyticketsbooking.utilities.AsString
+import com.compose.flyticketsbooking.utilities.DialogType
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun OneWay(
-    content: String
+    content: String,
 ) {
 
     ConstraintLayout(
@@ -58,6 +57,10 @@ fun OneWay(
 
     ) {
         val (from, to, upDown, departureReturnItemsWrap, travelerClassWrap) = remember { createRefs() }
+        val viewModel: OneWayViewModel = koinViewModel()
+        val chooseDate = AsString(viewModel.chooseDate.collectAsStateWithLifecycle().value)
+        val returnDate = AsString(viewModel.returnDate.collectAsStateWithLifecycle().value)
+        val passengerOnBoard = AsString(viewModel.passengers.collectAsStateWithLifecycle().value)
 
         DepartureItem(
             image = R.drawable.baseline_flight_takeoff_24,
@@ -113,27 +116,26 @@ fun OneWay(
                 end.linkTo(parent.end)
                 top.linkTo(to.bottom, margin = 36.dp)
             }) {
+
             SmallItemDeparture(
                 modifier = Modifier
                     .height(48.dp)
                     .weight(0.95f)
                     .shadow(8.dp)
                     .clip(RoundedCornerShape(8.dp))
-                    .background(Color.White)
-
+                    .background(Color.White),
+                chooseDate
             )
 
             Spacer(modifier = Modifier.weight(0.1f))
 
-            SmallItemOnlyText(
-                text = R.string.addReturnDate,
-                fontSize = 16.dp,
-                modifier = Modifier
-                    .height(48.dp)
-                    .weight(0.95f)
-                    .shadow(8.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Color.White)
+            AddReturnDate(modifier = Modifier
+                .height(48.dp)
+                .weight(0.95f)
+                .shadow(8.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color.White),
+                returnDate
             )
         }
 
@@ -145,16 +147,23 @@ fun OneWay(
                 end.linkTo(parent.end)
                 top.linkTo(departureReturnItemsWrap.bottom, margin = 16.dp)
             }) {
-            SmallItemOnlyText(
-                text = R.string.oneAdult,
-                fontSize = 18.dp,
-                modifier = Modifier
-                    .height(48.dp)
-                    .weight(0.95f)
-                    .shadow(8.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Color.White)
-
+//            SmallItemOnlyText(
+//                text = R.string.oneAdult,
+//                fontSize = 18.dp,
+//                modifier = Modifier
+//                    .height(48.dp)
+//                    .weight(0.95f)
+//                    .shadow(8.dp)
+//                    .clip(RoundedCornerShape(8.dp))
+//                    .background(Color.White)
+//            )
+            AddPassengers(modifier = Modifier
+                .height(48.dp)
+                .weight(0.95f)
+                .shadow(8.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color.White),
+                passengerOnBoard
             )
 
             Spacer(modifier = Modifier.weight(0.1f))
@@ -171,7 +180,31 @@ fun OneWay(
 
             )
         }
+    }
+}
 
+@Composable
+private fun AddReturnDate(modifier: Modifier, date: String) {
+    val showDialog = remember { mutableStateOf(false) }
+    Box(
+        modifier = modifier
+            .clickable {
+                showDialog.value = true
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = date,
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+            color = Color.Gray
+        )
+
+        if (showDialog.value) {
+            CustomDatePickerDialog(label = stringResource(id = R.string.departure), DialogType.RETURN) {
+                showDialog.value = false
+            }
+        }
     }
 }
 
@@ -250,15 +283,13 @@ fun DepartureItem(
 }
 
 @Composable
-fun SmallItemDeparture(
-    modifier: Modifier,
-) {
-    var showDialog = remember { mutableStateOf(false) }
+private fun SmallItemDeparture(modifier: Modifier, choose: String) {
+    val showDialog = remember { mutableStateOf(false) }
     Box(
         modifier = modifier
-        .clickable {
-            showDialog.value = true
-    }
+            .clickable {
+                showDialog.value = true
+            }
     ) {
         Row(
             modifier = Modifier
@@ -279,14 +310,42 @@ fun SmallItemDeparture(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 8.dp),
-                text = "15/07/23",
+                text = choose,
                 fontWeight = FontWeight.Bold,
                 fontSize = 18.sp
             )
         }
 
         if (showDialog.value) {
-            CustomDatePickerDialog(label = stringResource(id = R.string.departure)) {
+            CustomDatePickerDialog(
+                label = stringResource(id = R.string.departure),
+                DialogType.DEPARTURE
+            ) {
+                showDialog.value = false
+            }
+        }
+    }
+}
+
+@Composable
+private fun AddPassengers(modifier: Modifier, passengers: String) {
+    val showDialog = remember { mutableStateOf(false) }
+    Box(
+        modifier = modifier
+            .clickable {
+                showDialog.value = true
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = passengers,
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp,
+            color = Color.Gray
+        )
+
+        if (showDialog.value) {
+            CustomPassengersPickerDialog(label = stringResource(id = R.string.passengers)) {
                 showDialog.value = false
             }
         }

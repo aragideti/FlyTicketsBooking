@@ -15,4 +15,7 @@
     <string name="multiply">Multiply</string>
     <string name="done">Done</string>
     <string name="departure">Departure</string>
+    <string name="chooseDate">Choose a date</string>
+    <string name="passengers">Passengers</string>
+    <string name="passengers_value">%1$s Adult, %2$s Child(ren), %3$s Baby(ies)</string>
 </resources>

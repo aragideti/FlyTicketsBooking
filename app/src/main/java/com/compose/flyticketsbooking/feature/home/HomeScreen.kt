@@ -18,8 +18,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -28,10 +28,10 @@ import com.compose.flyticketsbooking.R
 import com.compose.flyticketsbooking.feature.home.cards.TabItem
 import com.compose.flyticketsbooking.feature.home.tabs.TabBar
 import com.compose.flyticketsbooking.feature.home.tabs.tabScreen.Multiply
-import com.compose.flyticketsbooking.feature.home.tabs.tabScreen.OneWay
+import com.compose.flyticketsbooking.feature.home.tabs.tabScreen.oneway.OneWay
 import com.compose.flyticketsbooking.feature.home.tabs.tabScreen.Round
 
-@Preview(showBackground = true)
+//@Preview(showBackground = true)
 @OptIn(ExperimentalFoundationApi::class)
 @Destination(start = true)
 @Composable
@@ -41,6 +41,7 @@ fun HomeScreen(
         CardPages.Visa, CardPages.Mastercard
     )
 
+    val lifecycleOwner = LocalLifecycleOwner.current
     ConstraintLayout(
         modifier = Modifier
             .fillMaxSize()
