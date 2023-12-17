@@ -17,5 +17,16 @@
     <string name="departure">Departure</string>
     <string name="chooseDate">Choose a date</string>
     <string name="passengers">Passengers</string>
+    <string name="login">Login</string>
+    <string name="welcome">Welcome back to the app</string>
+    <string name="email">Email Address</string>
+    <string name="emailHint">example@email.com</string>
+    <string name="passwordHint">∙∙∙∙∙∙∙∙∙∙∙</string>
+    <string name="password">Password</string>
+    <string name="keep">Keep me signed in</string>
+    <string name="signIn">Or sign in with</string>
+    <string name="forgotPassword">Forgot password?</string>
+    <string name="register">Create an account</string>
+    <string name="continueWithGoogle">Continue with Google</string>
     <string name="passengers_value">%1$s Adult, %2$s Child(ren), %3$s Baby(ies)</string>
 </resources>
